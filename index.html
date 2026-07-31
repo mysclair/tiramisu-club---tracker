@@ -71,7 +71,11 @@
     .search-btn:hover { background: var(--navy-dark); }
 
     /* ORDER SUMMARY CARD */
--i 's/.summary-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; margin-bottom: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 12px; box-shadow: 0 2px 8px rgba(27,45,91,0.06); }/.summary-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; margin-bottom: 24px; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 8px; box-shadow: 0 2px 8px rgba(27,45,91,0.06); overflow-x: auto; }/' /mnt/user-data/outputs/index.html
+ .summary-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; margin-bottom: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 12px; box-shadow: 0 2px 8px rgba(27,45,91,0.06); }
+    .summary-item { text-align: center; }
+    .summary-num { font-size: 24px; font-weight: 700; color: var(--navy); line-height: 1; margin-bottom: 4px; }
+    .summary-label { font-size: 11px; color: var(--mid); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+    .summary-divider { width: 1px; background: var(--border-light); }
 
     /* RESULTS */
     .results-section { margin-bottom: 32px; }

@@ -8,43 +8,102 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --cream: #FDF6EE; --blush: #F2D9D9; --rose: #C8737A; --rose-dark: #9E454B;
-      --charcoal: #2B2B2B; --mid: #6B6363; --border: #E8D5D5;
+      --navy: #1B2D5B;
+      --navy-dark: #111E3D;
+      --navy-light: #2A3F73;
+      --maroon: #7A1A1A;
+      --maroon-light: #9B2323;
+      --cream: #F5F0E8;
+      --cream-dark: #EDE6D8;
+      --white: #FFFFFF;
+      --charcoal: #1A1A2E;
+      --mid: #5A6480;
+      --border: #D0D8F0;
+      --border-light: #E8EDF8;
     }
     body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(--charcoal); min-height: 100vh; }
-    header { background: white; border-bottom: 1px solid var(--border); padding: 18px 24px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 10; }
-    .logo-pill { background: var(--blush); color: var(--rose-dark); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; }
-    header h1 { font-size: 15px; font-weight: 500; }
-    main { max-width: 860px; margin: 0 auto; padding: 40px 20px 80px; }
-    .hero { text-align: center; margin-bottom: 36px; }
-    .hero h2 { font-size: 28px; font-weight: 600; line-height: 1.3; margin-bottom: 8px; }
+
+    /* HEADER */
+    header { background: var(--navy); padding: 16px 24px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 10; box-shadow: 0 2px 12px rgba(27,45,91,0.3); }
+    .logo-pill { background: var(--maroon); color: white; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; }
+    header h1 { font-size: 15px; font-weight: 500; color: white; }
+    header .stars { margin-left: auto; color: rgba(255,255,255,0.5); font-size: 14px; letter-spacing: 4px; }
+
+    main { max-width: 860px; margin: 0 auto; padding: 36px 20px 80px; }
+
+    /* HERO */
+    .hero { text-align: center; margin-bottom: 28px; }
+    .hero h2 { font-size: 28px; font-weight: 600; line-height: 1.3; margin-bottom: 8px; color: var(--navy); }
     .hero p { font-size: 14px; color: var(--mid); font-weight: 300; }
-    .search-card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 32px; box-shadow: 0 2px 12px rgba(200,115,122,0.06); }
+
+    /* ANNOUNCEMENTS */
+    .announcements { margin-bottom: 24px; }
+    .announce-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .announce-header span { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--navy); }
+    .announce-header::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .announce-item { background: var(--navy); color: white; border-radius: 12px; padding: 14px 18px; margin-bottom: 8px; display: flex; align-items: flex-start; gap: 12px; }
+    .announce-item .announce-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .announce-item .announce-text { flex: 1; }
+    .announce-item .announce-title { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+    .announce-item .announce-body { font-size: 12px; color: rgba(255,255,255,0.75); line-height: 1.5; }
+    .announce-item.urgent { background: var(--maroon); }
+    .announce-item.info { background: var(--navy-light); }
+
+    /* RETURNING BANNER */
+    .returning-banner { background: var(--white); border: 1.5px solid var(--navy); border-radius: 14px; padding: 16px 20px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-shadow: 0 2px 8px rgba(27,45,91,0.1); }
+    .returning-left { display: flex; align-items: center; gap: 10px; }
+    .returning-left span { font-size: 13px; color: var(--mid); }
+    .returning-left strong { color: var(--navy); font-family: 'DM Mono', monospace; font-size: 13px; }
+    .returning-btns { display: flex; gap: 8px; flex-shrink: 0; }
+    .btn-yes { background: var(--navy); color: white; border: none; border-radius: 8px; padding: 8px 16px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.2s; }
+    .btn-yes:hover { background: var(--navy-dark); }
+    .btn-no { background: transparent; color: var(--mid); border: 1px solid var(--border); border-radius: 8px; padding: 8px 16px; font-size: 13px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.2s; }
+    .btn-no:hover { background: var(--cream-dark); }
+
+    /* SEARCH */
+    .search-card { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 32px; box-shadow: 0 2px 12px rgba(27,45,91,0.08); }
     .search-label { font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mid); margin-bottom: 10px; display: block; }
     .search-row { display: flex; gap: 10px; }
     .search-row input { flex: 1; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: 10px; font-family: 'DM Mono', monospace; font-size: 14px; color: var(--charcoal); background: var(--cream); outline: none; transition: border-color 0.2s; }
-    .search-row input:focus { border-color: var(--rose); }
-    .search-row input::placeholder { color: #C9B8B8; }
-    .search-btn { background: var(--rose); color: white; border: none; border-radius: 10px; padding: 12px 22px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.2s; white-space: nowrap; }
-    .search-btn:hover { background: var(--rose-dark); }
+    .search-row input:focus { border-color: var(--navy); }
+    .search-row input::placeholder { color: #B0BAD8; }
+    .search-btn { background: var(--navy); color: white; border: none; border-radius: 10px; padding: 12px 22px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.2s; white-space: nowrap; }
+    .search-btn:hover { background: var(--navy-dark); }
+
+    /* ORDER SUMMARY CARD */
+    .summary-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; margin-bottom: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 12px; box-shadow: 0 2px 8px rgba(27,45,91,0.06); }
+    .summary-item { text-align: center; }
+    .summary-num { font-size: 24px; font-weight: 700; color: var(--navy); line-height: 1; margin-bottom: 4px; }
+    .summary-label { font-size: 11px; color: var(--mid); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+    .summary-divider { width: 1px; background: var(--border-light); }
+
+    /* RESULTS */
     .results-section { margin-bottom: 32px; }
     .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
     .warehouse-badge { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; }
-    .badge-kr { background: #F2D9D9; color: var(--rose-dark); }
-    .badge-ch { background: #D9EAF2; color: #2B6A9E; }
+    .badge-kr { background: rgba(27,45,91,0.12); color: var(--navy); }
+    .badge-ch { background: rgba(122,26,26,0.12); color: var(--maroon); }
     .section-count { font-size: 12px; color: var(--mid); }
-    .table-wrap { background: white; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+
+    /* TABLE */
+    .table-wrap { background: var(--white); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: 0 2px 8px rgba(27,45,91,0.06); }
     table { width: 100%; border-collapse: collapse; }
-    thead tr { background: #FAF2F2; border-bottom: 1px solid var(--border); }
-    th { padding: 11px 16px; text-align: left; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mid); }
-    td { padding: 13px 16px; font-size: 13px; border-bottom: 1px solid #F5EDED; vertical-align: middle; }
+    thead tr { background: var(--navy); }
+    th { padding: 11px 16px; text-align: left; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(255,255,255,0.8); }
+    td { padding: 13px 16px; font-size: 13px; border-bottom: 1px solid var(--border-light); vertical-align: middle; }
     tr:last-child td { border-bottom: none; }
-    tr:hover td { background: #FFFAFA; }
-    .order-id { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500; color: var(--rose-dark); }
+    tr:hover td { background: #F0F4FF; }
+    .order-id { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500; color: var(--navy); }
     .item-name { font-weight: 500; }
+    .tracking-wrap { display: flex; align-items: center; gap: 6px; }
     .tracking-num { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--mid); }
-    .ems-amount { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; color: var(--charcoal); }
-    .ems-paid { font-size: 14px; }
+    .copy-btn { background: transparent; border: 1px solid var(--border); border-radius: 6px; padding: 3px 8px; font-size: 11px; color: var(--mid); cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; white-space: nowrap; }
+    .copy-btn:hover { background: var(--navy); color: white; border-color: var(--navy); }
+    .copy-btn.copied { background: #2E7D32; color: white; border-color: #2E7D32; }
+    .ems-amount { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; color: var(--maroon); }
+    .ems-paid { font-size: 13px; color: #2E7D32; font-weight: 500; }
+
+    /* STATUS */
     .status { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; white-space: nowrap; }
     .status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
     .status-secured   { background: #FFF3E0; color: #E07B00; }
@@ -55,32 +114,93 @@
     .status-arrived   { background: #E8F5E9; color: #1B5E20; }
     .status-cancelled { background: #FFEBEE; color: #C62828; }
     .status-default   { background: #F5F5F5; color: #616161; }
-    .not-found { background: white; border: 1px solid var(--border); border-radius: 14px; text-align: center; padding: 48px 20px; }
+
+    /* STATES */
+    .not-found { background: var(--white); border: 1px solid var(--border); border-radius: 14px; text-align: center; padding: 48px 20px; }
     .not-found .emoji { font-size: 36px; margin-bottom: 12px; }
-    .not-found h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+    .not-found h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; color: var(--navy); }
     .not-found p { font-size: 13px; color: var(--mid); }
     .loading { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 40px; color: var(--mid); font-size: 14px; }
-    .spinner { width: 18px; height: 18px; border: 2px solid var(--border); border-top-color: var(--rose); border-radius: 50%; animation: spin 0.7s linear infinite; }
+    .spinner { width: 18px; height: 18px; border: 2px solid var(--border); border-top-color: var(--navy); border-radius: 50%; animation: spin 0.7s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-    footer { text-align: center; padding: 24px; font-size: 12px; color: #C9B8B8; }
+    footer { text-align: center; padding: 24px; font-size: 12px; color: #A0AABF; }
+
     @media (max-width: 600px) {
       .hero h2 { font-size: 22px; }
       .search-row { flex-direction: column; }
       .search-btn { width: 100%; }
-      th:nth-child(4), td:nth-child(4) { display: none; }
+      .returning-banner { flex-direction: column; align-items: flex-start; }
+      th:nth-child(5), td:nth-child(5) { display: none; }
+      .summary-divider { display: none; }
     }
   </style>
 </head>
 <body>
+
 <header>
   <div class="logo-pill">tiramisuclub</div>
   <h1>Order Tracker</h1>
+  <span class="stars">✦ ✦</span>
 </header>
+
 <main>
   <div class="hero">
     <h2>Track your order 🎀</h2>
     <p>Enter your Telegram username (without @) to see your orders</p>
   </div>
+
+  <!-- ============================================ -->
+  <!--  ANNOUNCEMENTS — EDIT YOUR MESSAGES HERE!   -->
+  <!--  To add: copy an <div class="announce-item"> -->
+  <!--  To remove: delete the whole <div> block     -->
+  <!--  Classes: announce-item / urgent / info      -->
+  <!-- ============================================ -->
+  <div class="announcements">
+    <div class="announce-header"><span>📢 Announcements</span></div>
+
+    <!-- ANNOUNCEMENT 1 — change text below -->
+    <div class="announce-item urgent">
+      <span class="announce-icon">🚨</span>
+      <div class="announce-text">
+        <div class="announce-title">Payment Reminder</div>
+        <div class="announce-body">Please settle all outstanding balances before your next order can be processed. DM us if you have any questions!</div>
+      </div>
+    </div>
+
+    <!-- ANNOUNCEMENT 2 — change text below -->
+    <div class="announce-item">
+      <span class="announce-icon">📦</span>
+      <div class="announce-text">
+        <div class="announce-title">Batch 1 has shipped!</div>
+        <div class="announce-body">Korea Batch 1 orders have been shipped. Check your tracking number above. Expected arrival 7–14 days.</div>
+      </div>
+    </div>
+
+    <!-- ANNOUNCEMENT 3 — change text below -->
+    <div class="announce-item info">
+      <span class="announce-icon">✨</span>
+      <div class="announce-text">
+        <div class="announce-title">Welcome to tiramisuclub!</div>
+        <div class="announce-body">Thank you for ordering with us 🎀 Feel free to DM us on Telegram if you have any questions about your order.</div>
+      </div>
+    </div>
+
+  </div>
+  <!-- ============================================ -->
+  <!--         END OF ANNOUNCEMENTS SECTION         -->
+  <!-- ============================================ -->
+
+  <!-- Returning user banner -->
+  <div id="returningBanner" style="display:none;" class="returning-banner">
+    <div class="returning-left">
+      <span>👋 Welcome back! Track as <strong id="savedUsernameDisplay"></strong>?</span>
+    </div>
+    <div class="returning-btns">
+      <button class="btn-yes" onclick="useSavedUsername()">Yes, that's me!</button>
+      <button class="btn-no" onclick="dismissBanner()">Not me</button>
+    </div>
+  </div>
+
   <div class="search-card">
     <span class="search-label">Your username</span>
     <div class="search-row">
@@ -88,14 +208,16 @@
       <button class="search-btn" onclick="searchOrders()">Track →</button>
     </div>
   </div>
+
   <div id="results"></div>
 </main>
-<footer>made with 🎀 by tiramisuclub</footer>
+
+<footer>made with 🎀 by tiramisuclub &nbsp;✦&nbsp; ✦</footer>
 
 <script>
   const SHEET_ID = '1qI5ECoJ7JVgXJxC2OhQPacD-wj_ztXycyD0-HLvQewA';
+  const STORAGE_KEY = 'tiramisuclub_username';
 
-  // A=0, B=1, C=2, D=3, E=4, F=5, G=6, H=7, I=8, J=9, K=10, L=11, M=12, N=13, O=14, P=15, Q=16
   const COL = {
     orderID:   1,   // B
     username:  2,   // C
@@ -105,7 +227,31 @@
     status:    16,  // Q - STATUS
   };
 
-  const DATA_START_ROW = 6; // data starts row 7 = index 6
+  const DATA_START_ROW = 6;
+
+  window.addEventListener('load', () => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      document.getElementById('savedUsernameDisplay').textContent = saved;
+      document.getElementById('returningBanner').style.display = 'flex';
+    }
+  });
+
+  function useSavedUsername() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      document.getElementById('usernameInput').value = saved;
+      document.getElementById('returningBanner').style.display = 'none';
+      searchOrders();
+    }
+  }
+
+  function dismissBanner() {
+    document.getElementById('returningBanner').style.display = 'none';
+    localStorage.removeItem(STORAGE_KEY);
+    document.getElementById('usernameInput').value = '';
+    document.getElementById('usernameInput').focus();
+  }
 
   async function fetchSheet(tabName) {
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(tabName)}`;
@@ -135,24 +281,74 @@
   function formatEMS(amount, status) {
     if (!amount || amount === '0' || amount === 'RM0.00' || amount === '0.0') return '—';
     if (status.toUpperCase().includes('EMS PAID')) return '<span class="ems-paid">💕 Paid</span>';
-    // Format as RM if not already
     const num = parseFloat(amount);
     if (!isNaN(num)) return `<span class="ems-amount">RM${num.toFixed(2)}</span>`;
     return `<span class="ems-amount">${amount}</span>`;
+  }
+
+  function copyTracking(btn, text) {
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = '✓ Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  function buildSummary(allOrders) {
+    const counts = { secured: 0, shipped: 0, arrived: 0, cancelled: 0 };
+    allOrders.forEach(o => {
+      const s = o.status.toUpperCase();
+      if (s.includes('ARRIVED')) counts.arrived++;
+      else if (s.includes('SHIPPED') || s.includes('OTW') || s.includes('EMS')) counts.shipped++;
+      else if (s.includes('CANCELLED')) counts.cancelled++;
+      else counts.secured++;
+    });
+    return `
+      <div class="summary-card">
+        <div class="summary-item">
+          <div class="summary-num">${allOrders.length}</div>
+          <div class="summary-label">Total Orders</div>
+        </div>
+        <div class="summary-divider"></div>
+        <div class="summary-item">
+          <div class="summary-num" style="color:#E07B00">${counts.secured}</div>
+          <div class="summary-label">Secured</div>
+        </div>
+        <div class="summary-divider"></div>
+        <div class="summary-item">
+          <div class="summary-num" style="color:#1565C0">${counts.shipped}</div>
+          <div class="summary-label">In Transit</div>
+        </div>
+        <div class="summary-divider"></div>
+        <div class="summary-item">
+          <div class="summary-num" style="color:#1B5E20">${counts.arrived}</div>
+          <div class="summary-label">Arrived</div>
+        </div>
+        <div class="summary-divider"></div>
+        <div class="summary-item">
+          <div class="summary-num" style="color:#C62828">${counts.cancelled}</div>
+          <div class="summary-label">Cancelled</div>
+        </div>
+      </div>`;
   }
 
   function buildTable(orders, warehouse) {
     if (orders.length === 0) return '';
     const badgeClass = warehouse === 'KR' ? 'badge-kr' : 'badge-ch';
     const warehouseLabel = warehouse === 'KR' ? '🇰🇷 Korea Warehouse' : '🇨🇳 China Warehouse';
-    const rows = orders.map(o => `
-      <tr>
-        <td><span class="order-id">${o.orderID}</span></td>
-        <td class="item-name">${o.item || '—'}</td>
-        <td><span class="status ${statusClass(o.status)}">${o.status || 'SECURED'}</span></td>
-        <td>${formatEMS(o.emsAmount, o.status)}</td>
-        <td><span class="tracking-num">${o.tracking || '—'}</span></td>
-      </tr>`).join('');
+    const rows = orders.map(o => {
+      const trackingCell = o.tracking && o.tracking !== ''
+        ? `<div class="tracking-wrap"><span class="tracking-num">${o.tracking}</span><button class="copy-btn" onclick="copyTracking(this,'${o.tracking}')">Copy</button></div>`
+        : '—';
+      return `
+        <tr>
+          <td><span class="order-id">${o.orderID}</span></td>
+          <td class="item-name">${o.item || '—'}</td>
+          <td><span class="status ${statusClass(o.status)}">${o.status || 'SECURED'}</span></td>
+          <td>${formatEMS(o.emsAmount, o.status)}</td>
+          <td>${trackingCell}</td>
+        </tr>`;
+    }).join('');
     return `
       <div class="results-section">
         <div class="section-header">
@@ -207,13 +403,17 @@
 
       const krOrders = filterOrders(krRows);
       const chOrders = filterOrders(chRows);
+      const allOrders = [...krOrders, ...chOrders];
 
-      if (krOrders.length + chOrders.length === 0) {
+      if (allOrders.length === 0) {
         resultsDiv.innerHTML = `<div class="not-found"><div class="emoji">🔍</div><h3>No orders found</h3><p>No orders found for <strong>${username}</strong>. Please check your username and try again!</p></div>`;
         return;
       }
 
-      resultsDiv.innerHTML = buildTable(krOrders, 'KR') + buildTable(chOrders, 'CH');
+      localStorage.setItem(STORAGE_KEY, username);
+      document.getElementById('returningBanner').style.display = 'none';
+
+      resultsDiv.innerHTML = buildSummary(allOrders) + buildTable(krOrders, 'KR') + buildTable(chOrders, 'CH');
 
     } catch (err) {
       resultsDiv.innerHTML = `<div class="not-found"><div class="emoji">⚠️</div><h3>Something went wrong</h3><p>Couldn't load order data. Please try again later.</p></div>`;

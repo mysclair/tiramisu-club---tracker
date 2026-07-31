@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,7 +15,7 @@
     header { background: white; border-bottom: 1px solid var(--border); padding: 18px 24px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 10; }
     .logo-pill { background: var(--blush); color: var(--rose-dark); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; }
     header h1 { font-size: 15px; font-weight: 500; }
-    main { max-width: 780px; margin: 0 auto; padding: 40px 20px 80px; }
+    main { max-width: 860px; margin: 0 auto; padding: 40px 20px 80px; }
     .hero { text-align: center; margin-bottom: 36px; }
     .hero h2 { font-size: 28px; font-weight: 600; line-height: 1.3; margin-bottom: 8px; }
     .hero p { font-size: 14px; color: var(--mid); font-weight: 300; }
@@ -44,6 +43,8 @@
     .order-id { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500; color: var(--rose-dark); }
     .item-name { font-weight: 500; }
     .tracking-num { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--mid); }
+    .ems-amount { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; color: var(--charcoal); }
+    .ems-paid { font-size: 14px; }
     .status { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; white-space: nowrap; }
     .status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
     .status-secured   { background: #FFF3E0; color: #E07B00; }
@@ -54,7 +55,7 @@
     .status-arrived   { background: #E8F5E9; color: #1B5E20; }
     .status-cancelled { background: #FFEBEE; color: #C62828; }
     .status-default   { background: #F5F5F5; color: #616161; }
-    .empty-state, .not-found { background: white; border: 1px solid var(--border); border-radius: 14px; text-align: center; padding: 48px 20px; }
+    .not-found { background: white; border: 1px solid var(--border); border-radius: 14px; text-align: center; padding: 48px 20px; }
     .not-found .emoji { font-size: 36px; margin-bottom: 12px; }
     .not-found h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
     .not-found p { font-size: 13px; color: var(--mid); }
@@ -66,6 +67,7 @@
       .hero h2 { font-size: 22px; }
       .search-row { flex-direction: column; }
       .search-btn { width: 100%; }
+      th:nth-child(4), td:nth-child(4) { display: none; }
     }
   </style>
 </head>
@@ -93,18 +95,17 @@
 <script>
   const SHEET_ID = '1qI5ECoJ7JVgXJxC2OhQPacD-wj_ztXycyD0-HLvQewA';
 
-  // Your sheet starts at row 7 (index 6), headers at row 6 (index 5)
-  // Columns are 0-indexed starting from column A
-  // A=0, B=1, C=2, D=3, E=4, F=5, G=6, H=7, I=8, J=9, K=10, L=11, M=12, N=13, O=14, P=15
+  // A=0, B=1, C=2, D=3, E=4, F=5, G=6, H=7, I=8, J=9, K=10, L=11, M=12, N=13, O=14, P=15, Q=16
   const COL = {
-    orderID:  1,   // B - Order ID
-    username: 2,   // C - Username
-    item:     3,   // D - Item name
-    tracking: 10,  // K - Local Tracking
-    status:   13,  // N - STATUS
+    orderID:   1,   // B
+    username:  2,   // C
+    item:      3,   // D
+    tracking:  10,  // K - Local Tracking
+    emsAmount: 13,  // N - EMS Amount
+    status:    16,  // Q - STATUS
   };
 
-  const DATA_START_ROW = 6; // row 7 in sheets = index 6 (0-based)
+  const DATA_START_ROW = 6; // data starts row 7 = index 6
 
   async function fetchSheet(tabName) {
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(tabName)}`;
@@ -121,14 +122,23 @@
 
   function statusClass(status) {
     const s = status.toUpperCase();
-    if (s.includes('ARRIVED'))       return 'status-arrived';
-    if (s.includes('EMS PAID'))      return 'status-emspaid';
-    if (s.includes('READY FOR EMS')) return 'status-readyems';
-    if (s.includes('SHIPPED'))       return 'status-shipped';
-    if (s.includes('OTW'))           return 'status-otw';
-    if (s.includes('CANCELLED'))     return 'status-cancelled';
-    if (s.includes('SECURED'))       return 'status-secured';
+    if (s.includes('ARRIVED'))        return 'status-arrived';
+    if (s.includes('EMS PAID'))       return 'status-emspaid';
+    if (s.includes('READY FOR EMS'))  return 'status-readyems';
+    if (s.includes('SHIPPED'))        return 'status-shipped';
+    if (s.includes('OTW'))            return 'status-otw';
+    if (s.includes('CANCELLED'))      return 'status-cancelled';
+    if (s.includes('SECURED'))        return 'status-secured';
     return 'status-default';
+  }
+
+  function formatEMS(amount, status) {
+    if (!amount || amount === '0' || amount === 'RM0.00' || amount === '0.0') return '—';
+    if (status.toUpperCase().includes('EMS PAID')) return '<span class="ems-paid">💕 Paid</span>';
+    // Format as RM if not already
+    const num = parseFloat(amount);
+    if (!isNaN(num)) return `<span class="ems-amount">RM${num.toFixed(2)}</span>`;
+    return `<span class="ems-amount">${amount}</span>`;
   }
 
   function buildTable(orders, warehouse) {
@@ -140,6 +150,7 @@
         <td><span class="order-id">${o.orderID}</span></td>
         <td class="item-name">${o.item || '—'}</td>
         <td><span class="status ${statusClass(o.status)}">${o.status || 'SECURED'}</span></td>
+        <td>${formatEMS(o.emsAmount, o.status)}</td>
         <td><span class="tracking-num">${o.tracking || '—'}</span></td>
       </tr>`).join('');
     return `
@@ -150,7 +161,15 @@
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Order ID</th><th>Item</th><th>Status</th><th>Tracking</th></tr></thead>
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Item</th>
+                <th>Status</th>
+                <th>EMS</th>
+                <th>Tracking</th>
+              </tr>
+            </thead>
             <tbody>${rows}</tbody>
           </table>
         </div>
@@ -178,10 +197,11 @@
           const item = getCell(row, COL.item);
           return user === username && item !== '';
         }).map(row => ({
-          orderID:  getCell(row, COL.orderID),
-          item:     getCell(row, COL.item),
-          status:   getCell(row, COL.status),
-          tracking: getCell(row, COL.tracking),
+          orderID:   getCell(row, COL.orderID),
+          item:      getCell(row, COL.item),
+          status:    getCell(row, COL.status),
+          tracking:  getCell(row, COL.tracking),
+          emsAmount: getCell(row, COL.emsAmount),
         }));
       }
 

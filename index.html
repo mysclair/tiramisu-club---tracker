@@ -83,6 +83,7 @@
     .warehouse-badge { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; }
     .badge-kr { background: rgba(27,45,91,0.12); color: var(--navy); }
     .badge-ch { background: rgba(122,26,26,0.12); color: var(--maroon); }
+    .badge-other { background: rgba(34,100,34,0.12); color: #1B5E20; }
     .section-count { font-size: 12px; color: var(--mid); }
 
     /* TABLE */
@@ -334,8 +335,8 @@
 
   function buildTable(orders, warehouse) {
     if (orders.length === 0) return '';
-    const badgeClass = warehouse === 'KR' ? 'badge-kr' : 'badge-ch';
-    const warehouseLabel = warehouse === 'KR' ? '🇰🇷 Korea Warehouse' : '🇨🇳 China Warehouse';
+    const badgeClass = warehouse === 'KR' ? 'badge-kr' : warehouse === 'CH' ? 'badge-ch' : 'badge-other';
+    const warehouseLabel = warehouse === 'KR' ? '🇰🇷 Korea Warehouse' : warehouse === 'CH' ? '🇨🇳 China Warehouse' : '🏷️ Other Tags';
     const rows = orders.map(o => {
       const trackingCell = o.tracking && o.tracking !== ''
         ? `<div class="tracking-wrap"><span class="tracking-num">${o.tracking}</span><button class="copy-btn" onclick="copyTracking(this,'${o.tracking}')">Copy</button></div>`
@@ -384,7 +385,7 @@
     resultsDiv.innerHTML = `<div class="loading"><div class="spinner"></div> Looking up your orders...</div>`;
 
     try {
-      const [krRows, chRows] = await Promise.all([fetchSheet('KR'), fetchSheet('CH')]);
+      const [krRows, chRows, otherRows] = await Promise.all([fetchSheet('KR'), fetchSheet('CH'), fetchSheet('OTHER TAGS')]);
 
       function filterOrders(rows) {
         return rows.slice(DATA_START_ROW).filter(row => {
@@ -403,7 +404,8 @@
 
       const krOrders = filterOrders(krRows);
       const chOrders = filterOrders(chRows);
-      const allOrders = [...krOrders, ...chOrders];
+      const otherOrders = filterOrders(otherRows);
+      const allOrders = [...krOrders, ...chOrders, ...otherOrders];
 
       if (allOrders.length === 0) {
         resultsDiv.innerHTML = `<div class="not-found"><div class="emoji">🔍</div><h3>No orders found</h3><p>No orders found for <strong>${username}</strong>. Please check your username and try again!</p></div>`;
@@ -413,7 +415,7 @@
       localStorage.setItem(STORAGE_KEY, username);
       document.getElementById('returningBanner').style.display = 'none';
 
-      resultsDiv.innerHTML = buildSummary(allOrders) + buildTable(krOrders, 'KR') + buildTable(chOrders, 'CH');
+      resultsDiv.innerHTML = buildSummary(allOrders) + buildTable(krOrders, 'KR') + buildTable(chOrders, 'CH') + buildTable(otherOrders, 'OTHER');
 
     } catch (err) {
       resultsDiv.innerHTML = `<div class="not-found"><div class="emoji">⚠️</div><h3>Something went wrong</h3><p>Couldn't load order data. Please try again later.</p></div>`;

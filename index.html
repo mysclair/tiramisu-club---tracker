@@ -300,13 +300,12 @@
   }
 
   function buildSummary(allOrders) {
-    const counts = { secured: 0, shipped: 0, arrived: 0, cancelled: 0 };
+    const counts = { shipped: 0, arrived: 0, readyPostage: 0 };
     allOrders.forEach(o => {
       const s = o.status.toUpperCase();
       if (s.includes('ARRIVED')) counts.arrived++;
+      else if (s === 'EMS PAID') counts.readyPostage++;
       else if (s.includes('SHIPPED') || s.includes('OTW') || s.includes('EMS')) counts.shipped++;
-      else if (s.includes('CANCELLED')) counts.cancelled++;
-      else counts.secured++;
     });
     return `
       <div class="summary-card">
@@ -316,23 +315,18 @@
         </div>
         <div class="summary-divider"></div>
         <div class="summary-item">
-          <div class="summary-num" style="color:#E07B00">${counts.secured}</div>
-          <div class="summary-label">Secured</div>
-        </div>
-        <div class="summary-divider"></div>
-        <div class="summary-item">
           <div class="summary-num" style="color:#1565C0">${counts.shipped}</div>
           <div class="summary-label">In Transit</div>
         </div>
         <div class="summary-divider"></div>
         <div class="summary-item">
-          <div class="summary-num" style="color:#1B5E20">${counts.arrived}</div>
-          <div class="summary-label">Arrived</div>
+          <div class="summary-num" style="color:#F57F17">${counts.readyPostage}</div>
+          <div class="summary-label">Ready for Postage</div>
         </div>
         <div class="summary-divider"></div>
         <div class="summary-item">
-          <div class="summary-num" style="color:#C62828">${counts.cancelled}</div>
-          <div class="summary-label">Cancelled</div>
+          <div class="summary-num" style="color:#1B5E20">${counts.arrived}</div>
+          <div class="summary-label">Arrived</div>
         </div>
       </div>`;
   }

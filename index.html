@@ -131,8 +131,24 @@
       .search-row { flex-direction: column; }
       .search-btn { width: 100%; }
       .returning-banner { flex-direction: column; align-items: flex-start; }
-      th:nth-child(5), td:nth-child(5) { display: none; }
       .summary-divider { display: none; }
+      .summary-card { gap: 4px; padding: 14px 10px; }
+      .summary-num { font-size: 18px; }
+      .summary-label { font-size: 9px; }
+
+      /* Hide EMS and Tracking on mobile, show scrollable table */
+      .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      table { min-width: 500px; }
+
+      /* Make status badge smaller on mobile */
+      .status { font-size: 10px; padding: 3px 7px; }
+
+      /* Smaller table cells on mobile */
+      th { padding: 10px 10px; font-size: 10px; }
+      td { padding: 10px 10px; font-size: 12px; }
+
+      /* Order ID smaller */
+      .order-id { font-size: 11px; }
     }
     .page-overlay { position: fixed; inset: 0; background: rgba(245,240,232,0.82); z-index: 0; pointer-events: none; }
   main, header, footer { position: relative; z-index: 1; }

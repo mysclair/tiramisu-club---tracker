@@ -343,7 +343,7 @@
         <tr>
           <td><span class="order-id">${o.orderID}</span></td>
           <td class="item-name">${o.item || '—'}</td>
-          <td><span class="status ${statusClass(o.status)}">${o.status.toUpperCase() === 'EMS PAID' ? 'READY FOR CHECKOUT' : (o.status || 'SECURED')}</span></td>
+          <td><span class="status ${statusClass(o.status)}">${o.status.toUpperCase() === 'EMS PAID' ? 'READY FOR POSTAGE' : (o.status || 'SECURED')}</span></td>
           <td>${formatEMS(o.emsAmount, o.status)}</td>
           <td>${trackingCell}</td>
         </tr>`;

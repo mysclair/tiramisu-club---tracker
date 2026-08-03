@@ -126,6 +126,53 @@
     @keyframes spin { to { transform: rotate(360deg); } }
     footer { text-align: center; padding: 24px; font-size: 12px; color: #A0AABF; }
 
+    /* DARK MODE TOGGLE */
+    .theme-toggle { background: rgba(255,255,255,0.15); border: none; border-radius: 20px; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 15px; transition: background 0.2s; margin-left: 8px; }
+    .theme-toggle:hover { background: rgba(255,255,255,0.25); }
+
+    body.dark-mode {
+      --cream: #14192B;
+      --cream-dark: #1C2238;
+      --white: #1C2238;
+      --charcoal: #EDEFF5;
+      --mid: #9AA3C0;
+      --border: #2C3454;
+      --border-light: #262D48;
+    }
+    body.dark-mode .page-overlay { background: rgba(20,25,43,0.88); }
+    body.dark-mode .status-secured   { background: #3D2E10; color: #FFB74D; }
+    body.dark-mode .status-otw       { background: #2E2547; color: #B39DDB; }
+    body.dark-mode .status-shipped   { background: #16324A; color: #64B5F6; }
+    body.dark-mode .status-readyems  { background: #3D3110; color: #FFD54F; }
+    body.dark-mode .status-emspaid   { background: #16321C; color: #81C784; }
+    body.dark-mode .status-arrived   { background: #16321C; color: #81C784; }
+    body.dark-mode .status-cancelled { background: #3D1616; color: #EF9A9A; }
+    body.dark-mode .status-default   { background: #2A2A2A; color: #B0B0B0; }
+    body.dark-mode tr:hover td { background: #202A44; }
+
+    /* LAST UPDATED */
+    .last-updated { text-align: center; font-size: 11px; color: var(--mid); margin-top: -6px; margin-bottom: 20px; }
+
+    /* RECENT SEARCHES */
+    .recent-searches { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+    .recent-label { font-size: 11px; color: var(--mid); margin-right: 2px; }
+    .recent-chip { background: var(--cream-dark); border: 1px solid var(--border); color: var(--mid); font-size: 12px; padding: 4px 12px; border-radius: 20px; cursor: pointer; font-family: 'DM Mono', monospace; transition: all 0.2s; }
+    .recent-chip:hover { background: var(--navy); color: white; border-color: var(--navy); }
+
+    /* FILTER BAR */
+    .filter-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+    .filter-label { font-size: 12px; color: var(--mid); font-weight: 500; }
+    .filter-select { background: var(--white); border: 1.5px solid var(--border); border-radius: 10px; padding: 8px 14px; font-size: 13px; color: var(--charcoal); font-family: 'DM Sans', sans-serif; cursor: pointer; outline: none; }
+    .filter-select:focus { border-color: var(--navy); }
+
+    /* SKELETON LOADER */
+    .skeleton-wrap { background: var(--white); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 20px; }
+    .skeleton-row { display: flex; gap: 16px; padding: 14px 16px; border-bottom: 1px solid var(--border-light); align-items: center; }
+    .skeleton-row:last-child { border-bottom: none; }
+    .skeleton-block { height: 14px; border-radius: 6px; background: linear-gradient(90deg, var(--cream-dark) 25%, var(--border-light) 50%, var(--cream-dark) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    .skel-1 { width: 18%; } .skel-2 { width: 32%; } .skel-3 { width: 20%; } .skel-4 { width: 12%; } .skel-5 { width: 10%; }
+
     @media (max-width: 600px) {
       .hero h2 { font-size: 22px; }
       .search-row { flex-direction: column; }
@@ -162,6 +209,7 @@
   <div class="logo-pill">tiramisuclub</div>
   <h1>Order Tracker</h1>
   <span class="stars">✦ ✦</span>
+  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle dark mode">🌙</button>
 </header>
 
 <main>
@@ -231,6 +279,7 @@
       <input type="text" id="usernameInput" placeholder="e.g. afiqahpikachu" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"/>
       <button class="search-btn" onclick="searchOrders()">Track →</button>
     </div>
+    <div class="recent-searches" id="recentSearches"></div>
   </div>
 
   <div id="results"></div>
@@ -241,6 +290,9 @@
 <script>
   const SHEET_ID = '1qI5ECoJ7JVgXJxC2OhQPacD-wj_ztXycyD0-HLvQewA';
   const STORAGE_KEY = 'tiramisuclub_username';
+  const THEME_KEY = 'tiramisuclub_theme';
+  const RECENT_KEY = 'tiramisuclub_recent';
+  const MAX_RECENT = 5;
 
   const COL = {
     orderID:   1,   // B
@@ -252,8 +304,61 @@
   };
 
   const DATA_START_ROW = 6;
+  let currentAllOrders = [];
+  let currentKrOrders = [];
+  let currentChOrders = [];
+  let currentOtherOrders = [];
 
+  /* ---------- THEME ---------- */
+  function applyTheme(theme) {
+    const btn = document.getElementById('themeToggle');
+    if (theme === 'dark') {
+      document.body.classList.add('dark-mode');
+      btn.textContent = '☀️';
+    } else {
+      document.body.classList.remove('dark-mode');
+      btn.textContent = '🌙';
+    }
+  }
+
+  function toggleTheme() {
+    const isDark = document.body.classList.contains('dark-mode');
+    const newTheme = isDark ? 'light' : 'dark';
+    localStorage.setItem(THEME_KEY, newTheme);
+    applyTheme(newTheme);
+  }
+
+  /* ---------- RECENT SEARCHES ---------- */
+  function getRecentSearches() {
+    try { return JSON.parse(localStorage.getItem(RECENT_KEY)) || []; } catch { return []; }
+  }
+
+  function saveRecentSearch(username) {
+    let recent = getRecentSearches().filter(u => u !== username);
+    recent.unshift(username);
+    recent = recent.slice(0, MAX_RECENT);
+    localStorage.setItem(RECENT_KEY, JSON.stringify(recent));
+    renderRecentSearches();
+  }
+
+  function renderRecentSearches() {
+    const recent = getRecentSearches();
+    const container = document.getElementById('recentSearches');
+    if (recent.length === 0) { container.innerHTML = ''; return; }
+    container.innerHTML = `<span class="recent-label">Recent:</span>` +
+      recent.map(u => `<button type="button" class="recent-chip" onclick="quickSearch('${u}')">${u}</button>`).join('');
+  }
+
+  function quickSearch(username) {
+    document.getElementById('usernameInput').value = username;
+    searchOrders();
+  }
+
+  /* ---------- RETURNING USER ---------- */
   window.addEventListener('load', () => {
+    applyTheme(localStorage.getItem(THEME_KEY) || 'light');
+    renderRecentSearches();
+
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       document.getElementById('savedUsernameDisplay').textContent = saved;
@@ -310,12 +415,64 @@
     return `<span class="ems-amount">${amount}</span>`;
   }
 
-  function copyTracking(btn, text) {
-    navigator.clipboard.writeText(text).then(() => {
-      btn.textContent = '✓ Copied!';
-      btn.classList.add('copied');
-      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
-    });
+  function buildSkeleton() {
+    const skelRow = () => `
+      <div class="skeleton-row">
+        <div class="skeleton-block skel-1"></div>
+        <div class="skeleton-block skel-2"></div>
+        <div class="skeleton-block skel-3"></div>
+        <div class="skeleton-block skel-4"></div>
+        <div class="skeleton-block skel-5"></div>
+      </div>`;
+    return `<div class="skeleton-wrap">${skelRow()}${skelRow()}${skelRow()}${skelRow()}</div>`;
+  }
+
+  function formatTimeAgo(date) {
+    const secs = Math.floor((new Date() - date) / 1000);
+    if (secs < 10) return 'just now';
+    if (secs < 60) return `${secs}s ago`;
+    const mins = Math.floor(secs / 60);
+    if (mins < 60) return `${mins}m ago`;
+    const hrs = Math.floor(mins / 60);
+    return `${hrs}h ago`;
+  }
+
+  function buildFilterBar() {
+    return `
+      <div class="filter-bar">
+        <span class="filter-label">Filter by status:</span>
+        <select class="filter-select" id="statusFilter" onchange="applyFilter()">
+          <option value="all">All Statuses</option>
+          <option value="secured">Secured</option>
+          <option value="transit">In Transit</option>
+          <option value="postage">Ready for Postage</option>
+          <option value="arrived">Arrived</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+      </div>`;
+  }
+
+  function statusMatchesFilter(status, filter) {
+    if (filter === 'all') return true;
+    const s = status.toUpperCase();
+    if (filter === 'arrived') return s.includes('ARRIVED');
+    if (filter === 'postage') return s.includes('EMS PAID');
+    if (filter === 'transit') return (s.includes('SHIPPED') || s.includes('OTW') || s.includes('READY FOR EMS')) && !s.includes('EMS PAID');
+    if (filter === 'cancelled') return s.includes('CANCELLED');
+    if (filter === 'secured') return s.includes('SECURED');
+    return true;
+  }
+
+  function applyFilter() {
+    const filter = document.getElementById('statusFilter').value;
+    const krFiltered = currentKrOrders.filter(o => statusMatchesFilter(o.status, filter));
+    const chFiltered = currentChOrders.filter(o => statusMatchesFilter(o.status, filter));
+    const otherFiltered = currentOtherOrders.filter(o => statusMatchesFilter(o.status, filter));
+    const tablesDiv = document.getElementById('tablesArea');
+    tablesDiv.innerHTML = buildTable(krFiltered, 'KR') + buildTable(chFiltered, 'CH') + buildTable(otherFiltered, 'OTHER');
+    if (krFiltered.length + chFiltered.length + otherFiltered.length === 0) {
+      tablesDiv.innerHTML = `<div class="not-found"><div class="emoji">🗂️</div><h3>No orders match this filter</h3><p>Try a different status filter above.</p></div>`;
+    }
   }
 
   function buildSummary(allOrders) {
@@ -397,7 +554,7 @@
       return;
     }
 
-    resultsDiv.innerHTML = `<div class="loading"><div class="spinner"></div> Looking up your orders...</div>`;
+    resultsDiv.innerHTML = buildSkeleton();
 
     try {
       const [krRows, chRows, otherRows] = await Promise.all([fetchSheet('KR'), fetchSheet('CH'), fetchSheet('OTHER TAGS')]);
@@ -427,10 +584,23 @@
         return;
       }
 
+      // Save state for filtering
+      currentKrOrders = krOrders;
+      currentChOrders = chOrders;
+      currentOtherOrders = otherOrders;
+      currentAllOrders = allOrders;
+
       localStorage.setItem(STORAGE_KEY, username);
+      saveRecentSearch(username);
       document.getElementById('returningBanner').style.display = 'none';
 
-      resultsDiv.innerHTML = buildSummary(allOrders) + buildTable(krOrders, 'KR') + buildTable(chOrders, 'CH') + buildTable(otherOrders, 'OTHER');
+      const timestamp = `<div class="last-updated">🕐 Last updated: ${formatTimeAgo(new Date())}</div>`;
+
+      resultsDiv.innerHTML =
+        buildSummary(allOrders) +
+        timestamp +
+        buildFilterBar() +
+        `<div id="tablesArea">${buildTable(krOrders, 'KR') + buildTable(chOrders, 'CH') + buildTable(otherOrders, 'OTHER')}</div>`;
 
     } catch (err) {
       resultsDiv.innerHTML = `<div class="not-found"><div class="emoji">⚠️</div><h3>Something went wrong</h3><p>Couldn't load order data. Please try again later.</p></div>`;

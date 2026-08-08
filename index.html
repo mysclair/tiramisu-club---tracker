@@ -316,11 +316,11 @@
     username:  2,   // C
     item:      3,   // D
     qty:       11,  // L - Quantity
-    emsAmount: 13,  // N - EMS Amount
+    emsAmount: 12,  // M - EMS Amount
     status:    16,  // Q - STATUS
   };
 
-  const DATA_START_ROW = 6;
+  const DATA_START_ROW = 0; // Google's gviz API already strips header rows automatically
   let currentAllOrders = [];
   let currentKrOrders = [];
   let currentChOrders = [];
